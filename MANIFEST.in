@@ -1,0 +1,3 @@
+recursive-include st_keyup/frontend/build *
+include README.md
+include LICENSE
