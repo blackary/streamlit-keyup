@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="streamlit-keyup",
-    version="0.1.0",
+    version="0.1.1",
     author="Zachary Blackwood",
     author_email="zachary@streamlit.io",
     description="Text input that renders on keyup",
