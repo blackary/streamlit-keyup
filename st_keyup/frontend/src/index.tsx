@@ -1,5 +1,11 @@
 import { Streamlit, RenderData } from "streamlit-component-lib"
 
+declare global {
+  interface Window {
+    rendered: boolean
+  }
+}
+
 function onKeyUp(event: any): void {
   Streamlit.setComponentValue(event.target.value)
 }
@@ -11,21 +17,29 @@ function onKeyUp(event: any): void {
  */
 function onRender(event: Event): void {
   // Get the RenderData from the event
-  const data = (event as CustomEvent<RenderData>).detail
+  if (!window.rendered) {
+    const data = (event as CustomEvent<RenderData>).detail
 
-  const label: string = data.args["label"]
-  //const value: string = data.args["value"]
-  //const key: string = data.args["key"]
+    const label: string = data.args["label"]
+    const value: string = data.args["value"]
 
-  const input = document.getElementsByTagName("input")[0] as HTMLInputElement
+    const input = document.getElementsByTagName("input")[0] as HTMLInputElement
 
-  const label_el = document.getElementsByTagName("label")[0] as HTMLLabelElement
+    const label_el = document.getElementsByTagName(
+      "label"
+    )[0] as HTMLLabelElement
 
-  if (label_el) {
-    label_el.innerText = label
+    if (label_el) {
+      label_el.innerText = label
+    }
+
+    if (value && !input.value) {
+      input.value = value
+    }
+
+    input.onkeyup = onKeyUp
+    window.rendered = true
   }
-
-  input.onkeyup = onKeyUp
 }
 
 // Attach our `onRender` handler to Streamlit's render event.
