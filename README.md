@@ -5,7 +5,7 @@ waiting to get the response when they're finished typing.
 
 But, what if you want to get the input out, and do something with it every time they type a new key (AKA "on keyup")?
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://keyup.streamlitapp.com)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://key-up.streamlitapp.com)
 
 ## Installation
 
