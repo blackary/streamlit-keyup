@@ -21,6 +21,13 @@ from st_keyup import st_keyup
 
 value = st_keyup("Enter a value")
 
-# Notice that value updates with every keyup
+# Notice that value updates after every key press
 st.write(value)
+
+# If you want to set a default value, you can pass one
+with_default = st_keyup("Enter a value", value="Example")
+
+# If you want to limit how often the value gets updated, pass `debounce` value, which
+# will force the value to only update after that many milliseconds have passed
+with_debounce = st_keyup("Enter a value", debounce=500)
 ```
