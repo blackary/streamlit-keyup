@@ -1,4 +1,5 @@
 import { Streamlit, RenderData } from "streamlit-component-lib"
+import { debounce } from "underscore"
 
 declare global {
   interface Window {
@@ -22,6 +23,7 @@ function onRender(event: Event): void {
 
     const label: string = data.args["label"]
     const value: string = data.args["value"]
+    const debounce_time: number = data.args["debounce"]
 
     const input = document.getElementsByTagName("input")[0] as HTMLInputElement
 
@@ -37,7 +39,13 @@ function onRender(event: Event): void {
       input.value = value
     }
 
-    input.onkeyup = onKeyUp
+    if (debounce_time > 0) {
+      input.onkeyup = debounce(onKeyUp, debounce_time)
+    }
+    else {
+      input.onkeyup = onKeyUp
+    }
+
     window.rendered = true
   }
 }

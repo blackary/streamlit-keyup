@@ -7,7 +7,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setuptools.setup(
     name="streamlit-keyup",
-    version="0.1.3",
+    version="0.1.4",
     author="Zachary Blackwood",
     author_email="zachary@streamlit.io",
     description="Text input that renders on keyup",
