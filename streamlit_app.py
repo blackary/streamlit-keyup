@@ -12,7 +12,9 @@ def get_cities() -> pd.DataFrame:
 
 cities = get_cities()
 
-name = st_keyup("Enter city name")
+debounce = st.checkbox("Add 0.5s debounce?")
+
+name = st_keyup("Enter city name", debounce=500 if debounce else None)
 
 if name:
     filtered = cities[cities.City.str.lower().str.contains(name.lower(), na=False)]
