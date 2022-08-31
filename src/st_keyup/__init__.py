@@ -39,7 +39,7 @@ def st_keyup(
         value=value,
         key=key,
         debounce=debounce,
-        default="",
+        default=value,
     )
 
     return component_value
