@@ -23,7 +23,7 @@ jobs:
           npm --version
       - name: build streamlit-keyup JS
         run: |
-          cd src/frontend/
+          cd src/st_keyup/frontend/
           npm install
           npm run build
       - name: Install dependencies
