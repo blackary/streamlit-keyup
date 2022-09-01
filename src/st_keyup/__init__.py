@@ -14,7 +14,7 @@ if not _RELEASE:
     )
 else:
     parent_dir = os.path.dirname(os.path.abspath(__file__))
-    build_dir = os.path.join(parent_dir, "frontend/build")
+    build_dir = os.path.join(parent_dir, "frontend/dist")
     _component_func = components.declare_component("st_keyup", path=build_dir)
 
 
@@ -69,4 +69,6 @@ def main():
 
 if __name__ == "__main__":
     if not _RELEASE:
+        main()
+    else:
         main()
