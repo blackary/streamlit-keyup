@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 from typing import Optional
 
 import streamlit as st
@@ -13,9 +13,8 @@ if not _RELEASE:
         "st_keyup", url="http://localhost:3001"
     )
 else:
-    parent_dir = os.path.dirname(os.path.abspath(__file__))
-    build_dir = os.path.join(parent_dir, "frontend/dist")
-    _component_func = components.declare_component("st_keyup", path=build_dir)
+    build_dir = Path(__file__).parent / "frontend/dist"
+    _component_func = components.declare_component("st_keyup", path=str(build_dir))
 
 
 def st_keyup(
