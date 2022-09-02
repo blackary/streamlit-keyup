@@ -4,7 +4,7 @@ from typing import Optional
 import streamlit as st
 import streamlit.components.v1 as components
 
-build_dir = Path(__file__).parent / "frontend"
+build_dir = Path(__file__).parent.absolute() / "frontend"
 _component_func = components.declare_component("st_keyup", path=str(build_dir))
 
 
