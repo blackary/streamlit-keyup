@@ -2,6 +2,16 @@ function onKeyUp(event) {
   Streamlit.setComponentValue(event.target.value)
 }
 
+const debounce = (callback, wait) => {
+  let timeoutId = null;
+  return (...args) => {
+    window.clearTimeout(timeoutId);
+    timeoutId = window.setTimeout(() => {
+      callback.apply(null, args);
+    }, wait);
+  };
+}
+
 /**
  * The component's render function. This will be called immediately after
  * the component is initially loaded, and then again every time the
@@ -23,7 +33,7 @@ function onRender(event) {
     }
 
     if (debounce_time > 0) {
-      input.onkeyup = _.debounce(onKeyUp, debounce_time)
+      input.onkeyup = debounce(onKeyUp, debounce_time)
     }
     else {
       input.onkeyup = onKeyUp
