@@ -1,5 +1,10 @@
 # streamlit-keyup
 
+[![PyPI version](https://img.shields.io/pypi/v/streamlit-keyup.svg?logo=pypi&logoColor=FFE873)](https://pypi.org/project/streamlit-keyup/)
+[![PyPI downloads](https://img.shields.io/pypi/dm/streamlit-keyup.svg)](https://pypistats.org/packages/streamlit-keyup)
+[![GitHub](https://img.shields.io/github/license/blackary/streamlit-keyup.svg)](LICENSE)
+[![Code style: Black](https://img.shields.io/badge/code%20style-Black-000000.svg)](https://github.com/psf/black)
+
 If you're collecting text input from your users in your streamlit app, `st.text_input` works well -- as long as you're happy with
 waiting to get the response when they're finished typing.
 
@@ -10,7 +15,6 @@ But, what if you want to get the input out, and do something with it every time 
 ![filtering](https://user-images.githubusercontent.com/4040678/186792601-a9e921e8-3051-45a0-80d6-e1673cf8ae37.gif)
 
 ## Installation
-
 
 `pip install streamlit-keyup`
 
