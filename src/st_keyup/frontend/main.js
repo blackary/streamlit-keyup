@@ -46,4 +46,4 @@ function onRender(event) {
 Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, onRender)
 Streamlit.setComponentReady()
 // Render with the correct height
-Streamlit.setFrameHeight(93)
+Streamlit.setFrameHeight(85)
