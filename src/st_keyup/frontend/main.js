@@ -1,4 +1,3 @@
-import './style.css'
 import { Streamlit } from "streamlit-component-lib"
 import { debounce } from "underscore"
 
