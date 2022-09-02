@@ -4,17 +4,8 @@ from typing import Optional
 import streamlit as st
 import streamlit.components.v1 as components
 
-# Create a _RELEASE constant. We'll set this to False while we're developing
-# the component, and True when we're ready to package and distribute it.
-_RELEASE = True
-
-if not _RELEASE:
-    _component_func = components.declare_component(
-        "st_keyup", url="http://localhost:3001"
-    )
-else:
-    build_dir = Path(__file__).parent / "frontend/dist"
-    _component_func = components.declare_component("st_keyup", path=str(build_dir))
+build_dir = Path(__file__).parent / "frontend"
+_component_func = components.declare_component("st_keyup", path=str(build_dir))
 
 
 def st_keyup(
@@ -67,7 +58,4 @@ def main():
 
 
 if __name__ == "__main__":
-    if not _RELEASE:
-        main()
-    else:
-        main()
+    main()

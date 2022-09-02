@@ -1,7 +1,3 @@
-import './style.css'
-import { Streamlit } from "streamlit-component-lib"
-import { debounce } from "underscore"
-
 function onKeyUp(event) {
   Streamlit.setComponentValue(event.target.value)
 }
@@ -27,7 +23,7 @@ function onRender(event) {
     }
 
     if (debounce_time > 0) {
-      input.onkeyup = debounce(onKeyUp, debounce_time)
+      input.onkeyup = _.debounce(onKeyUp, debounce_time)
     }
     else {
       input.onkeyup = onKeyUp
