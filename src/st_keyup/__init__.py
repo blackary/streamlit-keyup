@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Optional
+from typing import Callable, Optional
 
 import streamlit as st
 import streamlit.components.v1 as components
@@ -13,6 +13,7 @@ def st_keyup(
     value: str = "",
     key: Optional[str] = None,
     debounce: int = 0,
+    on_change: Optional[Callable] = None,
 ):
     """
     Generate a text input that renders on keyup, debouncing the input by the
@@ -24,6 +25,10 @@ def st_keyup(
     if you are having performance issues, you should consider setting a debounce
     value.
     """
+
+    if key is None:
+        key = "st_keyup_" + label
+
     component_value = _component_func(
         label=label,
         value=value,
@@ -32,10 +37,22 @@ def st_keyup(
         default=value,
     )
 
+    if on_change is not None:
+        if "__previous_values__" not in st.session_state:
+            st.session_state["__previous_values__"] = {}
+
+        if component_value != st.session_state["__previous_values__"].get(key, value):
+            st.session_state["__previous_values__"][key] = component_value
+
+            if on_change:
+                on_change()
+
     return component_value
 
 
 def main():
+    from datetime import datetime
+
     st.write("## Default keyup input")
     value = st_keyup("Enter a value")
 
@@ -47,14 +64,26 @@ def main():
     st.write(value)
 
     "## Keyup input with 500 millesecond debounce"
-    value = st_keyup("Enter a second value", debounce=500)
+    value = st_keyup("Enter a second value debounced", debounce=500)
 
+    st.write(value)
+
+    def on_change():
+        st.write("Value changed!", datetime.now())
+
+    "## Keyup input with on_change callback"
+    value = st_keyup("Enter a third value", on_change=on_change)
+
+    "## Keyup input with on_change callback and debounce"
+    value = st_keyup("Enter a third value...", on_change=on_change, debounce=1000)
     st.write(value)
 
     "## Standard text input for comparison"
     value = st.text_input("Enter a value")
 
     st.write(value)
+
+    st.write(st.session_state)
 
 
 if __name__ == "__main__":
