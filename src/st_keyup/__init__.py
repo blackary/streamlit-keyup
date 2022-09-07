@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Any, Callable, Dict, Optional, Tuple
 
 import streamlit as st
 import streamlit.components.v1 as components
@@ -14,6 +14,8 @@ def st_keyup(
     key: Optional[str] = None,
     debounce: int = 0,
     on_change: Optional[Callable] = None,
+    args: Optional[Tuple[Any, ...]] = None,
+    kwargs: Optional[Dict[str, Any]] = None,
 ):
     """
     Generate a text input that renders on keyup, debouncing the input by the
@@ -24,6 +26,10 @@ def st_keyup(
     when the user is typing. Since the input updating will cause the app to rerun,
     if you are having performance issues, you should consider setting a debounce
     value.
+
+    on_change is a callback function that will be called when the value changes.
+
+    args and kwargs are passed to the on_change callback function, if they are passed.
     """
 
     if key is None:
@@ -45,7 +51,11 @@ def st_keyup(
             st.session_state["__previous_values__"][key] = component_value
 
             if on_change:
-                on_change()
+                if args is None:
+                    args = tuple()
+                if kwargs is None:
+                    kwargs = {}
+                on_change(*args, **kwargs)
 
     return component_value
 
@@ -71,11 +81,18 @@ def main():
     def on_change():
         st.write("Value changed!", datetime.now())
 
+    def on_change2(*args, **kwargs):
+        st.write("Value changed!", args, kwargs)
+
     "## Keyup input with on_change callback"
     value = st_keyup("Enter a third value", on_change=on_change)
 
     "## Keyup input with on_change callback and debounce"
     value = st_keyup("Enter a third value...", on_change=on_change, debounce=1000)
+    st.write(value)
+
+    "## Keyup input with args"
+    value = st_keyup("Enter a fourth value...", on_change=on_change2, args=("Hello", "World"), kwargs={"foo": "bar"})
     st.write(value)
 
     "## Standard text input for comparison"
