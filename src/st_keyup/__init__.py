@@ -29,7 +29,8 @@ def st_keyup(
 
     on_change is a callback function that will be called when the value changes.
 
-    args and kwargs are passed to the on_change callback function, if they are passed.
+    args and kwargs are optional arguments which are passed to the on_change callback
+    function
     """
 
     if key is None:
@@ -52,7 +53,7 @@ def st_keyup(
 
             if on_change:
                 if args is None:
-                    args = tuple()
+                    args = ()
                 if kwargs is None:
                     kwargs = {}
                 on_change(*args, **kwargs)
