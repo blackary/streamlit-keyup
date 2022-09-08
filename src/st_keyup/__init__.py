@@ -12,7 +12,7 @@ def st_keyup(
     label: str,
     value: str = "",
     key: Optional[str] = None,
-    debounce: int = 0,
+    debounce: Optional[int] = None,
     on_change: Optional[Callable] = None,
     args: Optional[Tuple[Any, ...]] = None,
     kwargs: Optional[Dict[str, Any]] = None,
@@ -93,7 +93,12 @@ def main():
     st.write(value)
 
     "## Keyup input with args"
-    value = st_keyup("Enter a fourth value...", on_change=on_change2, args=("Hello", "World"), kwargs={"foo": "bar"})
+    value = st_keyup(
+        "Enter a fourth value...",
+        on_change=on_change2,
+        args=("Hello", "World"),
+        kwargs={"foo": "bar"},
+    )
     st.write(value)
 
     "## Standard text input for comparison"
