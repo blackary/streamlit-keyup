@@ -32,7 +32,7 @@ function onRender(event) {
       input.value = value
     }
 
-    if (debounce_time > 0) {
+    if (debounce_time > 0) { // is false if debounce_time is 0 or undefined
       input.onkeyup = debounce(onKeyUp, debounce_time)
     }
     else {
