@@ -8,7 +8,7 @@ label {
   box-sizing: border-box;
   font-size: 13px;
   color: rgb(49 51 63 / 95%);
-  margin-bottom: 7px;
+  margin-bottom: 0.5rem;
   height: auto;
   min-height: 1.5rem;
   vertical-align: middle;
@@ -18,6 +18,7 @@ label {
   align-items: center;
   position: absolute;
   left: 0;
+  top: 2px;
 }
 .input {
   text-size-adjust: 100%;
@@ -56,7 +57,7 @@ label {
   left: 0;
   right: 0;
   bottom: 0;
-  top: 38px;
+  top: 33px;
 }
 input {
   text-size-adjust: 100%;
@@ -125,4 +126,24 @@ input {
   border-right-color: rgb(255, 75, 75);
   border-top-color: rgb(255, 75, 75);
   border-bottom-color: rgb(255, 75, 75);
+}
+.disabled label {
+  color: rgba(49, 51, 63, 0.4) !important;
+}
+
+.disabled input {
+  cursor: not-allowed;
+  color: rgba(49, 51, 63, 0.4) !important;
+}
+
+.label-hidden label {
+  display: none !important;
+}
+
+.label-collapsed label {
+  display: none !important;
+}
+
+.label-collapsed .input {
+  top: 0 !important;
 }
