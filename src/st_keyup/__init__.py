@@ -11,11 +11,17 @@ _component_func = components.declare_component("st_keyup", path=str(build_dir))
 def st_keyup(
     label: str,
     value: str = "",
+    max_chars: Optional[int] = None,
     key: Optional[str] = None,
+    type: str = "default",
     debounce: Optional[int] = None,
     on_change: Optional[Callable] = None,
     args: Optional[Tuple[Any, ...]] = None,
     kwargs: Optional[Dict[str, Any]] = None,
+    *,
+    placeholder: str = "",
+    disabled: bool = False,
+    label_visibility: str = "visible",
 ):
     """
     Generate a text input that renders on keyup, debouncing the input by the
@@ -42,6 +48,11 @@ def st_keyup(
         key=key,
         debounce=debounce,
         default=value,
+        max_chars=max_chars,
+        type=type,
+        placeholder=placeholder,
+        disabled=disabled,
+        label_visibility=label_visibility,
     )
 
     if on_change is not None:
@@ -69,10 +80,26 @@ def main():
 
     st.write(value)
 
-    "## Keyup input with default value"
-    value = st_keyup("Enter a second value", value="Hello World")
+    "## Keyup input with hidden label"
+    value = st_keyup("You can't see this", label_visibility="hidden")
 
-    st.write(value)
+    "## Keyup input with collapsed label"
+    value = st_keyup("This either", label_visibility="collapsed")
+
+    "## Keyup with max_chars 5"
+    value = st_keyup("Keyup with max chars", max_chars=5)
+
+    "## Keyup input with password type"
+    value = st_keyup("Password", value="Hello World", type="password")
+
+    "## Keyup input with disabled"
+    value = st_keyup("Disabled", value="Hello World", disabled=True)
+
+    "## Keyup input with default value"
+    value = st_keyup("Default value", value="Hello World")
+
+    "## Keyup input with placeholder"
+    value = st_keyup("Has placeholder", placeholder="A placeholder")
 
     "## Keyup input with 500 millesecond debounce"
     value = st_keyup("Enter a second value debounced", debounce=500)
@@ -86,10 +113,10 @@ def main():
         st.write("Value changed!", args, kwargs)
 
     "## Keyup input with on_change callback"
-    value = st_keyup("Enter a third value", on_change=on_change)
+    value = st_keyup("Has an on_change", on_change=on_change)
 
     "## Keyup input with on_change callback and debounce"
-    value = st_keyup("Enter a third value...", on_change=on_change, debounce=1000)
+    value = st_keyup("On_change + debounce", on_change=on_change, debounce=1000)
     st.write(value)
 
     "## Keyup input with args"
