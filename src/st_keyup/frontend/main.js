@@ -45,9 +45,11 @@ function onRender(event) {
 
     if (type == "password") {
       input.type = "password"
+    }else if(type == "text"){
+      input.type = "text"
     }
     else {
-      input.type = "text"
+      input.type = type
     }
 
     if (max_chars) {
