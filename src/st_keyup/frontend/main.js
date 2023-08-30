@@ -44,18 +44,18 @@ function onRender(event) {
     }
 
     if(type == "password"){
-      text_input.type = "password"
+      input.type = "password"
     }
     else if (type == "phone" || type == "tel") {
-      text_input.type = "tel"
+      input.type = "tel"
     }
     else if (type == "email"){
-      text_input.type = "email"
+      input.type = "email"
     }
     else if (type =="number"){
-      text_input.type = "number"
+      input.type = "number"
     }else{
-      text_input.type = "text"
+      input.type = "text"
     }
 
     if (max_chars) {
