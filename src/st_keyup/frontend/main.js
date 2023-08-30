@@ -43,13 +43,19 @@ function onRender(event) {
       input.value = value
     }
 
-    if (type == "password") {
-      input.type = "password"
-    }else if(type == "text"){
-      input.type = "text"
+    if(type == "password"){
+      text_input.type = "password"
     }
-    else {
-      input.type = type
+    else if (type == "phone" || type == "tel") {
+      text_input.type = "tel"
+    }
+    else if (type == "email"){
+      text_input.type = "email"
+    }
+    else if (type =="number"){
+      text_input.type = "number"
+    }else{
+      text_input.type = "text"
     }
 
     if (max_chars) {
