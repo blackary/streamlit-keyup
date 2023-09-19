@@ -62,12 +62,11 @@ def st_keyup(
         if component_value != st.session_state["__previous_values__"].get(key, value):
             st.session_state["__previous_values__"][key] = component_value
 
-            if on_change:
-                if args is None:
-                    args = ()
-                if kwargs is None:
-                    kwargs = {}
-                on_change(*args, **kwargs)
+            if args is None:
+                args = ()
+            if kwargs is None:
+                kwargs = {}
+            on_change(*args, **kwargs)
 
     return component_value
 
