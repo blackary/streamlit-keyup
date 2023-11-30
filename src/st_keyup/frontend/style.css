@@ -29,10 +29,10 @@ label {
   font-size: 13px;
   font-weight: normal;
   line-height: 1.6;
-  border-top-left-radius: 0.25rem;
-  border-top-right-radius: 0.25rem;
-  border-bottom-right-radius: 0.25rem;
-  border-bottom-left-radius: 0.25rem;
+  border-top-left-radius: 0.45rem;
+  border-top-right-radius: 0.45rem;
+  border-bottom-right-radius: 0.45rem;
+  border-bottom-left-radius: 0.45rem;
   transition-duration: 200ms;
   display: flex;
   width: 100%;
@@ -54,10 +54,11 @@ label {
   border-bottom-color: rgb(240, 242, 246);
   background-color: rgb(240, 242, 246);
   position: absolute;
+
   left: 0;
   right: 0;
   bottom: 0;
-  top: 33px;
+  top: 30px;
 }
 input {
   text-size-adjust: 100%;
@@ -84,12 +85,16 @@ input {
   max-width: 100%;
   cursor: text;
   margin: 0px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 14px;
-  padding-right: 14px;
-  caret-color: rgb(49, 51, 63);
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  border-right-width: 1px;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
   min-width: 0px;
+  caret-color: auto;
 }
 .input:focus-within {
   text-size-adjust: 100%;
@@ -100,11 +105,15 @@ input {
   font-size: 1rem;
   font-weight: normal;
   line-height: 1.6;
-  border-top-left-radius: 0.25rem;
-  border-top-right-radius: 0.25rem;
-  border-bottom-right-radius: 0.25rem;
-  border-bottom-left-radius: 0.25rem;
+  border-top-left-radius: 0.45rem;
+  border-top-right-radius: 0.45rem;
+  border-bottom-right-radius: 0.45rem;
+  border-bottom-left-radius: 0.45rem;
   transition-duration: 200ms;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  border-right-width: 1px;
   display: flex;
   width: 100%;
   box-sizing: border-box;
@@ -146,4 +155,45 @@ input {
 
 .label-collapsed .input {
   top: 0 !important;
+}
+@media (prefers-color-scheme: dark) {
+  label {
+    color: rgb(250, 250, 250);
+  }
+  .input {
+    border-left-color: rgb(38, 39, 48);
+    border-right-color: rgb(38, 39, 48);
+    border-top-color: rgb(38, 39, 48);
+    border-bottom-color: rgb(38, 39, 48);
+    background-color: rgb(38, 39, 48);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  input {
+    color: rgb(255, 255, 255);
+    caret-color: auto;
+  }
+  .input:focus-within {
+    border-left-color: rgb(255,75, 75);
+    border-right-color: rgb(255,75, 75);
+    border-top-color: rgb(255,75, 75);
+    border-bottom-color: rgb(255,75, 75);
+    background-color: rgb(38, 39, 48);
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+  }
+  .disabled label {
+    color: rgba(206, 204, 192, 0.4) !important;
+  }
+    .disabled input {
+    color: rgba(206, 204, 192, 0.4) !important;
+  }
+}
+.st-bx {
+background-color: transparent;
 }

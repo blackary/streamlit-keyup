@@ -13,7 +13,7 @@ def st_keyup(
     value: str = "",
     max_chars: Optional[int] = None,
     key: Optional[str] = None,
-    type: str = "default",
+    type: str = "text",
     debounce: Optional[int] = None,
     on_change: Optional[Callable] = None,
     args: Optional[Tuple[Any, ...]] = None,
@@ -22,23 +22,59 @@ def st_keyup(
     placeholder: str = "",
     disabled: bool = False,
     label_visibility: str = "visible",
-):
-    """
-    Generate a text input that renders on keyup, debouncing the input by the
+)-> str:
+        
+    r"""Generate a text input that renders on keyup, debouncing the input by the
     specified amount of milliseconds.
-
     Debounce means that it will wait at least the specified amount of milliseconds
     before updating the value. This is useful for preventing excessive updates
     when the user is typing. Since the input updating will cause the app to rerun,
     if you are having performance issues, you should consider setting a debounce
     value.
 
-    on_change is a callback function that will be called when the value changes.
+    Parameters
+    ----------
+    label : str
+        A short label explaining to the user what this input is for.
+    value : object
+        The text value of this widget when it first renders. This will be
+        cast to str internally.
+    max_chars : int or None
+        Max number of characters allowed in text input.
+    key : str or int
+        An optional string or integer to use as the unique key for the widget.
+        If this is omitted, a key will be generated for the widget
+        based on its content. Multiple widgets of the same type may
+        not share the same key.
+    type : str
+        The type of the text input. This can be any of these following types in the list below.
+        If no value is passed, it defaults to "text".
+        ["password", ("tel" or "phone"), "email", "number", "text"]
+    debounce: int
+        An optional int in miliseconds that will wait that amount of time before updating.
+    on_change : callable
+        An optional callback invoked when this text input's value changes.
+    args : tuple
+        An optional tuple of args to pass to the callback.
+    kwargs : dict
+        An optional dict of kwargs to pass to the callback.
+    placeholder : str or None
+        An optional string displayed when the text input is empty. If None,
+        no text is displayed. This argument can only be supplied by keyword.
+    disabled : bool
+        An optional boolean, which disables the text input if set to True.
+        The default is False. This argument can only be supplied by keyword.
+    label_visibility : "visible", "hidden", or "collapsed"
+        The visibility of the label. If "hidden", the label doesn't show but there
+        is still empty space for it above the widget (equivalent to label="").
+        If "collapsed", both the label and the space are removed. Default is
+        "visible". This argument can only be supplied by keyword.
 
-    args and kwargs are optional arguments which are passed to the on_change callback
-    function
-    """
-
+    Returns
+    -------
+    str
+        The current keyup values of the text input widget.
+"""   
     if key is None:
         key = "st_keyup_" + label
 
