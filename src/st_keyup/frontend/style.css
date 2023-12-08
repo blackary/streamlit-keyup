@@ -1,13 +1,13 @@
 label {
-  font-family: "Source Sans Pro", sans-serif;
+  font-family: var(--font);
   font-weight: 400;
   line-height: 1.6;
   text-size-adjust: 100%;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: var(--text-color);
   -webkit-font-smoothing: auto;
   box-sizing: border-box;
   font-size: 13px;
-  color: rgb(49 51 63 / 95%);
+  color: var(--text-color);
   margin-bottom: 0.5rem;
   height: auto;
   min-height: 1.5rem;
@@ -22,64 +22,46 @@ label {
 }
 .input {
   text-size-adjust: 100%;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: var(--text-color);
   -webkit-font-smoothing: auto;
-  color: rgba(49, 51, 63, 0.8);
-  font-family: "Source Sans Pro", sans-serif;
+  color: var(--text-color);
+  font-family: var(--font);
   font-size: 13px;
   font-weight: normal;
   line-height: 1.6;
-  border-top-left-radius: 0.25rem;
-  border-top-right-radius: 0.25rem;
-  border-bottom-right-radius: 0.25rem;
-  border-bottom-left-radius: 0.25rem;
+  border-radius: 0.45rem;
   transition-duration: 200ms;
   display: flex;
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
-  border-left-width: 2px;
-  border-right-width: 2px;
-  border-top-width: 2px;
-  border-bottom-width: 2px;
-  border-left-style: solid;
-  border-right-style: solid;
-  border-top-style: solid;
-  border-bottom-style: solid;
+  border-width: 1px;
+  border-style: solid;
   transition-property: border;
   transition-timing-function: cubic-bezier(0.2, 0.8, 0.4, 1);
-  border-left-color: rgb(240, 242, 246);
-  border-right-color: rgb(240, 242, 246);
-  border-top-color: rgb(240, 242, 246);
-  border-bottom-color: rgb(240, 242, 246);
-  background-color: rgb(240, 242, 246);
+  border-color: var(--background-color);
+  background-color: var(--secondary-background-color);
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
-  top: 33px;
+  bottom: 2px;
+  top: 28px;
 }
 input {
   text-size-adjust: 100%;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: var(--text-color);
   -webkit-font-smoothing: auto;
   overflow: visible;
-  font-family: "Source Sans Pro", sans-serif;
+  font-family: var(--font);
   font-size: 15px;
   font-weight: normal;
   line-height: 1.6;
   width: 100%;
   box-sizing: border-box;
-  color: rgba(49, 51, 63, 0.8);
+  color: var(--text-color);
   background-color: transparent;
-  border-left-width: 0px;
-  border-right-width: 0px;
-  border-top-width: 0px;
-  border-bottom-width: 0px;
-  border-left-style: none;
-  border-right-style: none;
-  border-top-style: none;
-  border-bottom-style: none;
+  border-width: 0px;
+  border-style: none;
   outline: none;
   max-width: 100%;
   cursor: text;
@@ -88,52 +70,40 @@ input {
   padding-bottom: 10px;
   padding-left: 14px;
   padding-right: 14px;
-  caret-color: rgb(49, 51, 63);
+  caret-color: var(--text-color);
   min-width: 0px;
 }
 .input:focus-within {
   text-size-adjust: 100%;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: var(--background-color);
   -webkit-font-smoothing: auto;
-  color: rgb(49, 51, 63);
-  font-family: "Source Sans Pro", sans-serif;
+  color: var(--text-color);
+  font-family: var(--font);
   font-size: 1rem;
   font-weight: normal;
   line-height: 1.6;
-  border-top-left-radius: 0.25rem;
-  border-top-right-radius: 0.25rem;
-  border-bottom-right-radius: 0.25rem;
-  border-bottom-left-radius: 0.25rem;
+  border-radius: 0.45rem;
   transition-duration: 200ms;
   display: flex;
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
-  border-left-width: 2px;
-  border-right-width: 2px;
-  border-top-width: 2px;
-  border-bottom-width: 2px;
-  border-left-style: solid;
-  border-right-style: solid;
-  border-top-style: solid;
-  border-bottom-style: solid;
+  border-width: 1px;
+  border-style: solid;
   transition-property: border;
   transition-timing-function: cubic-bezier(0.2, 0.8, 0.4, 1);
-  background-color: rgb(240, 242, 246);
+  background-color: var(--secondary-background-color);
   padding-left: 0px;
   padding-right: 0px;
-  border-left-color: rgb(255, 75, 75);
-  border-right-color: rgb(255, 75, 75);
-  border-top-color: rgb(255, 75, 75);
-  border-bottom-color: rgb(255, 75, 75);
+  border-color: var(--primary-color);
 }
 .disabled label {
-  color: rgba(49, 51, 63, 0.4) !important;
+  color: var(--secondary-background-color) !important;
 }
 
 .disabled input {
   cursor: not-allowed;
-  color: rgba(49, 51, 63, 0.4) !important;
+  color: var(--secondary-background-color) !important;
 }
 
 .label-hidden label {
