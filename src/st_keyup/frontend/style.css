@@ -44,8 +44,8 @@ label {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
-  top: 30px;
+  bottom: 2px;
+  top: 28px;
 }
 input {
   text-size-adjust: 100%;

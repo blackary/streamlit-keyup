@@ -3,7 +3,7 @@ import streamlit as st
 from st_keyup import st_keyup
 
 
-@st.experimental_singleton
+@st.cache_data
 def get_cities() -> pd.DataFrame:
     url = "https://raw.githubusercontent.com/grammakov/USA-cities-and-states/master/us_cities_states_counties.csv"
     return pd.read_csv(url, sep="|")
