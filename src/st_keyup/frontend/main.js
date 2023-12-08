@@ -19,6 +19,17 @@ const debounce = (callback, wait) => {
  */
 function onRender(event) {
   // Get the RenderData from the event
+
+  // This is called on every render to allow changing themes via settings
+  const root = document.getElementById("root")
+
+  root.style.setProperty("--base", event.detail.theme.base)
+  root.style.setProperty("--primary-color", event.detail.theme.primaryColor)
+  root.style.setProperty("--background-color", event.detail.theme.backgroundColor)
+  root.style.setProperty("--secondary-background-color", event.detail.theme.secondaryBackgroundColor)
+  root.style.setProperty("--text-color", event.detail.theme.textColor)
+  root.style.setProperty("--font", event.detail.theme.font)
+
   if (!window.rendered) {
     const {
       label,
@@ -33,7 +44,6 @@ function onRender(event) {
 
     const input = document.getElementById("input_box");
     const label_el = document.getElementById("label")
-    const root = document.getElementById("root")
 
     if (label_el) {
       label_el.innerText = label
