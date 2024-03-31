@@ -90,11 +90,12 @@ function onRender(event) {
       input.onkeyup = onKeyUp
     }
 
+    // Render with the correct height
+    Streamlit.setFrameHeight(73)
+
     window.rendered = true
   }
 }
 
 Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, onRender)
 Streamlit.setComponentReady()
-// Render with the correct height
-Streamlit.setFrameHeight(73)
