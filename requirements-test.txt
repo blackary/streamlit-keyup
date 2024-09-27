@@ -1,0 +1,4 @@
+robotframework==7.0
+robotframework-debuglibrary==2.5.0
+robotframework-pythonlibcore==4.4.0
+robotframework-seleniumlibrary==6.2.0
