@@ -14,7 +14,11 @@ cities = get_cities()
 
 debounce = st.checkbox("Add 0.5s debounce?")
 
-name = st_keyup("Enter city name", debounce=500 if debounce else None)
+disabled = st.checkbox("Disable input?")
+
+name = st_keyup(
+    "Enter city name", debounce=500 if debounce else None, disabled=disabled
+)
 
 if name:
     filtered = cities[cities.City.str.lower().str.contains(name.lower(), na=False)]
