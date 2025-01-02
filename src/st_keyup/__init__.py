@@ -39,13 +39,24 @@ def st_keyup(
     function
     """
 
-    if key is None:
-        key = "st_keyup_" + label
+    key_parts = [
+        key,
+        disabled,
+        label_visibility,
+        debounce,
+        max_chars,
+        type,
+        placeholder,
+    ]
+
+    computed_key = "st_keyup_" + "__".join(
+        str(part) for part in key_parts if part is not None
+    )
 
     component_value = _component_func(
         label=label,
         value=value,
-        key=key,
+        key=computed_key,
         debounce=debounce,
         default=value,
         max_chars=max_chars,
@@ -54,6 +65,12 @@ def st_keyup(
         disabled=disabled,
         label_visibility=label_visibility,
     )
+
+    if key is not None:
+        st.session_state[key] = component_value
+
+    if key is None:
+        key = "st_keyup_" + label
 
     if on_change is not None:
         if "__previous_values__" not in st.session_state:
