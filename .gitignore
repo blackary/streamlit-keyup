@@ -32,6 +32,9 @@ latest_logs
 archived_logs
 current-screenshot.png
 
+# Robot framework FE tests
+tests/robot/output/
+
 ########################################################################
 # OSX - https://github.com/github/gitignore/blob/master/Global/macOS.gitignore
 ########################################################################
