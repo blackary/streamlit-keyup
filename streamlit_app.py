@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-from src.st_keyup import st_keyup
+from st_keyup import st_keyup
 
 @st.cache_data
 def get_cities() -> pd.DataFrame:
