@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Tuple, Literal
+from typing import Any, Callable, Dict, Literal, Optional, Tuple
 
 import streamlit as st
 import streamlit.components.v1 as components
