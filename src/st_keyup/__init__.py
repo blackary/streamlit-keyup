@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Callable, Dict, Optional, Tuple, Literal
 
 import streamlit as st
 import streamlit.components.v1 as components
@@ -13,7 +13,7 @@ def st_keyup(
     value: str = "",
     max_chars: Optional[int] = None,
     key: Optional[str] = None,
-    type: str = "default",
+    type: Literal["default", "password"] = "default",
     debounce: Optional[int] = None,
     on_change: Optional[Callable] = None,
     args: Optional[Tuple[Any, ...]] = None,
@@ -21,7 +21,7 @@ def st_keyup(
     *,
     placeholder: str = "",
     disabled: bool = False,
-    label_visibility: str = "visible",
+    label_visibility: Literal["visible", "hidden", "collapsed"] = "visible",
 ):
     """
     Generate a text input that renders on keyup, debouncing the input by the

@@ -44,6 +44,18 @@ function onRender(event) {
 
     const input = document.getElementById("input_box");
     const label_el = document.getElementById("label")
+    const clearButton = document.getElementById("clear_button");
+
+    input.addEventListener("input", () => {
+      clearButton.style.display = input.value ? "block" : "none";
+    });
+
+    clearButton.addEventListener("click", () => {
+      input.value = "";
+      clearButton.style.display = "none";
+
+      Streamlit.setComponentValue("");
+    });
 
     if (label_el) {
       label_el.innerText = label
