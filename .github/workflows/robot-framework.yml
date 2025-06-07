@@ -1,0 +1,43 @@
+name: Robot Framework CI
+
+# Borrowed code from:
+# https://piyathida-sanaoun01.medium.com/how-to-setup-ci-github-action-to-run-robot-framework-49028a404fee
+# https://github.com/laojala/robot_docker_demo/blob/master/.github/workflows/run_robot_framework_tests.yml
+
+on:
+  push:
+    branches:
+      - main
+    # Do not run tests if file README.md changes
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    # Do not run tests if file README.md changes
+    paths-ignore:
+      - '**.md'
+  schedule:
+    # Run tests nightly at 2am
+    - cron:  '0 2 * * *'
+jobs:
+    Run-Test:
+      runs-on: ubuntu-20.04
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+        - uses: actions/cache@v4
+          id: cache
+          with:
+            path: ~/.cache/pip
+            key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        - name: Install pip dependencies
+          run: |
+            pip install --upgrade pip certifi urllib3
+            pip install -r requirements.txt -r requirements-test.txt
+        - name: Run Robot tests
+          run: ADDITIONAL_ROBOT_ARGS="--variable=additional_chrome_options:--headless" ./run-robot-tests
+        - name: Publish test results
+          if: always()
+          uses: actions/upload-artifact@v4
+          with:
+            name: robot-test-results
+            path: tests/robot/output/

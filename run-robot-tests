@@ -1,3 +1,7 @@
 #!/bin/sh
 
-robot --outputdir=tests/robot/output --variable=app_url:http://localhost:8501 tests/robot/
+robot \
+    --outputdir=tests/robot/output \
+    --variable=app_url:http://localhost:8501 \
+    ${ADDITIONAL_ROBOT_ARGS} \
+    tests/robot/
