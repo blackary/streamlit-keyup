@@ -41,3 +41,11 @@ jobs:
           with:
             name: robot-test-results
             path: tests/robot/output/
+        - name: Generate Robot Framework test report
+          if: always()
+          uses: joonvena/robotframework-reporter-action@v2.5
+          with:
+            gh_access_token: ${{ secrets.GITHUB_TOKEN }}
+            report_path: tests/robot/output
+            show_passed_tests: true
+            failed_tests_on_top: true
