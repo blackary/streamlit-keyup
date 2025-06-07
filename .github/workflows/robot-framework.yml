@@ -49,3 +49,4 @@ jobs:
             report_path: tests/robot/output
             show_passed_tests: true
             failed_tests_on_top: true
+            only_summary: true
