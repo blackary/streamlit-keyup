@@ -4,6 +4,7 @@ body {
   color: var(--text-color);
   font-family: var(--font);
 }
+
 label {
   font-family: var(--font);
   font-weight: 400;
@@ -26,6 +27,7 @@ label {
   left: 0;
   top: 2px;
 }
+
 .input {
   text-size-adjust: 100%;
   -webkit-tap-highlight-color: var(--text-color);
@@ -53,6 +55,7 @@ label {
   bottom: 2px;
   top: 28px;
 }
+
 input {
   text-size-adjust: 100%;
   -webkit-tap-highlight-color: var(--text-color);
@@ -79,6 +82,7 @@ input {
   caret-color: var(--text-color);
   min-width: 0px;
 }
+
 .input:focus-within {
   text-size-adjust: 100%;
   -webkit-tap-highlight-color: var(--background-color);
@@ -103,6 +107,7 @@ input {
   padding-right: 0px;
   border-color: var(--primary-color);
 }
+
 .disabled label {
   color: var(--secondary-background-color) !important;
 }
@@ -122,4 +127,21 @@ input {
 
 .label-collapsed .input {
   top: 0 !important;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+  color: #0000009c;
+  display: none;
+}
+
+.clear-btn:hover {
+  color: #ffffff;
 }
