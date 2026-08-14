@@ -3,6 +3,10 @@ body {
   background-color: var(--background-color);
   color: var(--text-color);
   font-family: var(--font);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 label {
   font-family: var(--font);
@@ -14,7 +18,7 @@ label {
   box-sizing: border-box;
   font-size: 13px;
   color: var(--text-color);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0;
   height: auto;
   min-height: 1.5rem;
   vertical-align: middle;
@@ -22,9 +26,7 @@ label {
   flex-direction: row;
   -webkit-box-align: center;
   align-items: center;
-  position: absolute;
-  left: 0;
-  top: 2px;
+  padding-top: 2px;
 }
 .input {
   text-size-adjust: 100%;
@@ -47,11 +49,7 @@ label {
   transition-timing-function: cubic-bezier(0.2, 0.8, 0.4, 1);
   border-color: var(--background-color);
   background-color: var(--secondary-background-color);
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 2px;
-  top: 28px;
+  margin-bottom: 2px;
 }
 input {
   text-size-adjust: 100%;
@@ -121,5 +119,5 @@ input {
 }
 
 .label-collapsed .input {
-  top: 0 !important;
+  margin-top: 0;
 }
