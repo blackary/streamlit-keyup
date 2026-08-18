@@ -7,17 +7,16 @@ long_description = (this_directory / "README.md").read_text()
 
 setuptools.setup(
     name="streamlit-keyup",
-    version="0.4.0",
+    version="1.0.0",
     author="Zachary Blackwood",
     author_email="zachary@streamlit.io",
-    description="Text input that renders on keyup",
+    description="Text input that returns value on every keystroke (Components v2)",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/blackary/streamlit-keyup",
     packages=setuptools.find_packages(where="src"),
     package_dir={"": "src"},
-    include_package_data=True,
     classifiers=[],
-    python_requires=">=3.7",
-    install_requires=["streamlit>=1.2", "jinja2"],
+    python_requires=">=3.10",
+    install_requires=["streamlit>=1.40"],
 )
