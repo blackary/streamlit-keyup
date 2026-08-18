@@ -4,7 +4,6 @@ Library             SeleniumLibrary
 
 *** Variables ***
 
-${st_keyup_iframe_locator}   css:iframe[title="st_keyup.st_keyup"]
 ${additional_chrome_options}            ""
 
 *** Keywords ***
@@ -25,10 +24,13 @@ Do Suite Teardown
 
 Input text into st_keyup
     [Arguments]                         ${text}
-    Wait until element is visible       ${st_keyup_iframe_locator}
-    Select frame                        ${st_keyup_iframe_locator}
-    Input text                          css:input[type="text"]      ${text}
-    Unselect frame
+    # Components v2 renders in Shadow DOM — no iframe, access via JS
+    Wait Until Element Is Visible       css:[data-testid='stBidiComponentIsolated']
+    Execute Javascript
+    ...    var host = document.querySelector("[data-testid='stBidiComponentIsolated']");
+    ...    var inp = host.shadowRoot.querySelector("#input");
+    ...    inp.value = "${text}";
+    ...    inp.dispatchEvent(new Event("input", {bubbles: true, composed: true}));
 
 Open URL
     [Arguments]                         ${url}
@@ -39,7 +41,6 @@ Open URL
     Wait Until Page Does Not Contain    Running...
     Sleep                               1 second
     ${result}=   Run Keyword And Return Status   Page Should Not Contain      Traceback
-    # Log To Console  ${result}
     IF   ${result} != True
         ${error_text}=  Get Text    css:.message
         Fail    Page should not contain "Traceback". Error: ${error_text}
@@ -47,6 +48,5 @@ Open URL
 
 Create Chrome WebDriver
     ${chrome_options} =    Evaluate    selenium.webdriver.ChromeOptions()
-    # Call Method    ${chrome_options}    add_argument    --no-sandbox
     Call Method    ${chrome_options}    add_argument    ${additional_chrome_options}
     Create WebDriver    Chrome    options=${chrome_options}
