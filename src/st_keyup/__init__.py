@@ -261,7 +261,9 @@ def st_keyup(
 
     _on_submit: Optional[Callable] = None
     if on_submit is not None:
-        _on_submit = functools.partial(on_submit, *(submit_args or ()), **(submit_kwargs or {}))
+        _on_submit = functools.partial(
+            on_submit, *(submit_args or ()), **(submit_kwargs or {})
+        )
 
     result = _keyup_component(
         data={
