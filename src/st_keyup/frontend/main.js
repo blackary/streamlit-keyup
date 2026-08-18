@@ -52,20 +52,19 @@ function onRender(event) {
     input.value = value
   }
 
-  if (type == "password") {
-    input.type = "password"
-  }
-  else {
-    input.type = "text"
+  // Only change type when needed — reassigning the same type clears value in some browsers
+  const desiredType = type == "password" ? "password" : "text"
+  if (input.type !== desiredType) {
+    const savedValue = input.value
+    input.type = desiredType
+    input.value = savedValue
   }
 
   if (max_chars) {
     input.maxLength = max_chars
   }
 
-  if (placeholder) {
-    input.placeholder = placeholder
-  }
+  input.placeholder = placeholder || ""
 
   // Re-apply state classes on every render so Python-side changes propagate
   root.classList.remove("disabled", "label-hidden", "label-collapsed")
