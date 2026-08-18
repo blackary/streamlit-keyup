@@ -252,7 +252,9 @@ def st_keyup(
     debounce : int | None
         Milliseconds to wait after the last keystroke before updating Python.
     on_change : callable | None
-        Callback fired on every value change (after debounce if set).
+        Callback fired on every value change (after debounce if set). Inside the
+        callback ``st.session_state[key]`` already holds the new value, matching
+        ``st.text_input`` semantics.
     args : tuple | None
         Positional args forwarded to *on_change*.
     kwargs : dict | None
@@ -314,15 +316,33 @@ def st_keyup(
         current_value = value
         programmatic_override = False
 
-    # Build callbacks
-    _on_change: Callable | None = None
-    if on_change is not None:
-        _on_change = functools.partial(on_change, *(args or ()), **(kwargs or {}))
+    # Build callbacks.
+    #
+    # Streamlit runs callbacks *before* the script re-executes, so the write to
+    # st.session_state[key] at the end of this function has not happened yet for
+    # the current value. Sync the user-facing key from the component's internal
+    # state first, so that reading st.session_state[key] inside a callback gives
+    # the NEW value — matching st.text_input semantics.
+    def _sync_user_key() -> None:
+        if key is None:
+            return
+        state = st.session_state.get(internal_key, {})
+        if isinstance(state, dict) and "value" in state:
+            new = state["value"]
+            st.session_state[key] = new
+            st.session_state[sentinel_key] = new
+
+    def _run_callbacks(user_cb: Callable | None, cb_args, cb_kwargs) -> None:
+        _sync_user_key()
+        if user_cb is not None:
+            user_cb(*(cb_args or ()), **(cb_kwargs or {}))
+
+    _on_change: Callable = functools.partial(_run_callbacks, on_change, args, kwargs)
 
     _on_submit: Callable | None = None
     if on_submit is not None:
         _on_submit = functools.partial(
-            on_submit, *(submit_args or ()), **(submit_kwargs or {})
+            _run_callbacks, on_submit, submit_args, submit_kwargs
         )
 
     result = _keyup_component(
@@ -339,9 +359,10 @@ def st_keyup(
         },
         default={"value": current_value},
         key=internal_key,
-        # v2 requires on_{state}_change to be set (even as a no-op) for the
-        # state name to be valid in `default`. Always pass at minimum a no-op.
-        on_value_change=_on_change or (lambda: None),
+        # _on_change always runs (it syncs session_state[key] before invoking the
+        # user's callback, if any), which also satisfies v2's requirement that
+        # on_{state}_change be set for the state name to be valid in `default`.
+        on_value_change=_on_change,
         # on_submitted_change registers "submitted" as a trigger; only wire it
         # when a real callback is requested to avoid unnecessary re-runs.
         **({"on_submitted_change": _on_submit} if _on_submit is not None else {}),

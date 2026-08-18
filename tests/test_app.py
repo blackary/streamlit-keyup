@@ -124,7 +124,7 @@ st.header("14. Unkeyed component")
 v14 = st_keyup("No key provided")
 st.write("value:", repr(v14))
 
-# ── 15. B1 regression: unrelated rerun must not stomp typed input ──────────
+# ── 15. Unrelated rerun must not stomp typed input ───────────────────────
 st.header("15. Unrelated rerun does not clear input")
 st.write("Type below, then click the button. Text must survive.")
 v15 = st_keyup("Survives unrelated rerun", key="t_stomp")
@@ -132,9 +132,9 @@ st.write("value:", repr(v15))
 st.session_state.setdefault("unrelated", 0)
 if st.button("Unrelated rerun", key="b_unrelated"):
     st.session_state.unrelated += 1
-st.write("unrelated clicks:", st.session_state.unrelated)
+st.write("unrelated:", st.session_state.unrelated)
 
-# ── 16. B2 regression: Enter with no on_submit must not error ──────────────
+# ── 16. Enter with no on_submit must not error ────────────────────────────
 st.header("16. Enter with no on_submit is safe")
 v16 = st_keyup("Press Enter (no on_submit)", key="t_no_submit")
 st.write("value:", repr(v16))
