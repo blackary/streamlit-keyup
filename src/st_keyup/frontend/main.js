@@ -1,4 +1,4 @@
-function onKeyUp(event) {
+function onInput(event) {
   Streamlit.setComponentValue(event.target.value)
 }
 
@@ -30,71 +30,72 @@ function onRender(event) {
   root.style.setProperty("--text-color", event.detail.theme.textColor)
   root.style.setProperty("--font", event.detail.theme.font)
 
-  if (!window.rendered) {
-    const {
-      label,
-      value,
-      debounce: debounce_time,
-      max_chars,
-      type,
-      placeholder,
-      disabled,
-      label_visibility
-    } = event.detail.args;
+  const {
+    label,
+    value,
+    debounce: debounce_time,
+    max_chars,
+    type,
+    placeholder,
+    disabled,
+    label_visibility
+  } = event.detail.args;
 
-    const input = document.getElementById("input_box");
-    const label_el = document.getElementById("label")
+  const input = document.getElementById("input_box");
+  const label_el = document.getElementById("label")
 
-    if (label_el) {
-      label_el.innerText = label
-    }
+  // Preserve whatever the user has typed; only fall back to Python's `value` if empty
+  const preservedValue = input.value || value || ""
 
-    if (value && !input.value) {
-      input.value = value
-    }
-
-    if (type == "password") {
-      input.type = "password"
-    }
-    else {
-      input.type = "text"
-    }
-
-    if (max_chars) {
-      input.maxLength = max_chars
-    }
-
-    if (placeholder) {
-      input.placeholder = placeholder
-    }
-
-    if (disabled) {
-      input.disabled = true
-      label.disabled = true
-      // Add "disabled" class to root element
-      root.classList.add("disabled")
-    }
-
-    if (label_visibility == "hidden") {
-      root.classList.add("label-hidden")
-    }
-    else if (label_visibility == "collapsed") {
-      root.classList.add("label-collapsed")
-      Streamlit.setFrameHeight(45)
-    }
-
-    if (debounce_time > 0) { // is false if debounce_time is 0 or undefined
-      input.onkeyup = debounce(onKeyUp, debounce_time)
-    }
-    else {
-      input.onkeyup = onKeyUp
-    }
-
-    // Render with the correct height
-    Streamlit.setFrameHeight(73)
-
-    window.rendered = true
+  if (label_el) {
+    label_el.innerText = label
   }
+
+  // Only change type when needed — reassigning the same type clears value in some browsers
+  const desiredType = type == "password" ? "password" : "text"
+  if (input.type !== desiredType) {
+    input.type = desiredType
+  }
+
+  if (max_chars) {
+    input.maxLength = max_chars
+  }
+
+  input.placeholder = placeholder || ""
+
+  // Restore value unconditionally — prevents any rendering side-effect from wiping it
+  input.value = preservedValue
+
+  // Re-apply state classes on every render so Python-side changes propagate
+  root.classList.remove("disabled", "label-hidden", "label-collapsed")
+
+  if (disabled) {
+    input.disabled = true
+    root.classList.add("disabled")
+  } else {
+    input.disabled = false
+  }
+
+  if (label_visibility == "hidden") {
+    root.classList.add("label-hidden")
+  }
+  else if (label_visibility == "collapsed") {
+    root.classList.add("label-collapsed")
+  }
+
+  // Attach handler only once; use oninput to capture voice, paste, autocomplete
+  if (!window.handlerAttached) {
+    if (debounce_time > 0) { // is false if debounce_time is 0 or undefined
+      input.oninput = debounce(onInput, debounce_time)
+    }
+    else {
+      input.oninput = onInput
+    }
+    window.handlerAttached = true
+  }
+
+  // Render with the correct height based on actual content
+  Streamlit.setFrameHeight(document.documentElement.scrollHeight)
 }
 
 Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, onRender)
