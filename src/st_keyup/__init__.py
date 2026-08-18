@@ -72,8 +72,8 @@ _CSS = """
   min-width: 0;
 }
 
-/* label visibility */
-.stkeyup--label-hidden   .stkeyup__label,
+/* label visibility: "hidden" keeps the space, "collapsed" removes it */
+.stkeyup--label-hidden .stkeyup__label { visibility: hidden; }
 .stkeyup--label-collapsed .stkeyup__label { display: none; }
 
 /* disabled */
@@ -121,15 +121,21 @@ export default function({ parentElement, data, setStateValue, setTriggerValue })
     input.value = saved;
   }
 
-  // ── Sync value from Python (programmatic updates, e.g. clearing) ──────────
-  // data.value reflects st.session_state[key]["value"], so it IS the current
-  // user-typed value on normal re-runs. Only update if Python changed it.
-  if ((data.value ?? "") !== input.value && !input._userTyping) {
-    input.value = data.value ?? "";
+  // ── Sync value from Python ────────────────────────────────────────────────
+  // data.value reflects st.session_state[key]["value"]. When it matches what
+  // we have, Python has acknowledged our last send and the round-trip is done —
+  // clear the typing guard. When it differs and we are NOT mid-send, Python
+  // changed the value externally (e.g. a programmatic reset), so adopt it.
+  const pyValue = data.value ?? "";
+  if (pyValue === input.value) {
+    input._userTyping = false;
+  } else if (!input._userTyping) {
+    input.value = pyValue;
   }
 
-  // ── Store latest debounce delay for use in the handler ────────────────────
+  // ── Store latest render values for use in the handlers ────────────────────
   parentElement._debounce = data.debounce ?? 0;
+  parentElement._hasSubmit = !!data.has_submit;
 
   // ── Attach handlers once ──────────────────────────────────────────────────
   if (!parentElement._attached) {
@@ -141,23 +147,26 @@ export default function({ parentElement, data, setStateValue, setTriggerValue })
       const delay = parentElement._debounce;
       if (delay > 0) {
         debounceTimer = setTimeout(() => {
-          input._userTyping = false;
           setStateValue("value", input.value);
         }, delay);
       } else {
         setStateValue("value", input.value);
-        // Allow a tick for the value to flush, then clear the flag
-        setTimeout(() => { input._userTyping = false; }, 0);
       }
+      // _userTyping is cleared in onRender once Python echoes the value back,
+      // never on a timer — a timer can expire before the round-trip completes
+      // and let an unrelated re-render stomp the user's input.
     });
 
     input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         // Flush any pending debounce immediately on Enter
         clearTimeout(debounceTimer);
-        input._userTyping = false;
         setStateValue("value", input.value);
-        setTriggerValue("submitted", input.value);
+        // Only fire the trigger when Python registered on_submitted_change;
+        // firing an unregistered trigger name is not a supported operation.
+        if (parentElement._hasSubmit) {
+          setTriggerValue("submitted", input.value);
+        }
       }
     });
 
@@ -175,6 +184,7 @@ _keyup_component = st.components.v2.component(
     html=_HTML,
     css=_CSS,
     js=_JS,
+    isolate_styles=True,
 )
 
 # ---------------------------------------------------------------------------
@@ -209,13 +219,26 @@ def st_keyup(
     label : str
         Label shown above the input.
     value : str
-        Default/initial value. Ignored after first render; use
-        st.session_state[key]["value"] to read or set the live value.
+        Initial value, used on first render only. On later runs the live value
+        comes from ``st.session_state[key]["value"]``.
     max_chars : int | None
         Maximum number of characters allowed.
     key : str | None
-        Streamlit widget key. Required for accessing the component's state via
-        st.session_state.
+        Streamlit widget key. Required to read the live value from
+        ``st.session_state[key]["value"]``.
+
+        To change the value programmatically, assign to that key *before* this
+        component is instantiated in the current script run — Streamlit raises
+        ``StreamlitAPIException`` if you modify it afterwards::
+
+            if st.session_state.pop("_clear_it", False):
+                st.session_state["my_key"]["value"] = ""
+
+            val = st_keyup("Label", key="my_key")
+
+            if st.button("Clear"):
+                st.session_state["_clear_it"] = True
+                st.rerun()
     type : str
         ``"default"`` or ``"password"``.
     debounce : int | None
@@ -276,6 +299,7 @@ def st_keyup(
             "placeholder": placeholder,
             "disabled": disabled,
             "label_visibility": label_visibility,
+            "has_submit": _on_submit is not None,
         },
         default={"value": current_value},
         key=key,
