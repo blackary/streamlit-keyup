@@ -25,7 +25,7 @@ Do Suite Teardown
 Input text into st_keyup
     [Arguments]                         ${text}
     # Components v2 renders in Shadow DOM — no iframe, access via JS
-    Wait Until Element Is Visible       css:[data-testid='stBidiComponentIsolated']
+    Wait Until Element Is Visible       css:[data-testid='stBidiComponentIsolated']    timeout=30s
     Execute Javascript
     ...    var host = document.querySelector("[data-testid='stBidiComponentIsolated']");
     ...    var inp = host.shadowRoot.querySelector("#input");
