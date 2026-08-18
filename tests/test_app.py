@@ -103,9 +103,9 @@ st.write("value:", repr(v11), "| submit_count:", st.session_state.submit_count)
 
 # ── 12. Programmatic clear via session_state ───────────────────────────────
 st.header("12. Programmatic clear")
-# The state must be modified BEFORE the component is instantiated this run.
+# Assign the plain string BEFORE the component is rendered.
 if st.session_state.pop("_do_clear", False):
-    st.session_state["t_clear"]["value"] = ""
+    st.session_state["t_clear"] = ""  # plain string assignment!
 
 v12 = st_keyup("Clear me from Python", key="t_clear")
 st.write("value:", repr(v12))
@@ -115,8 +115,9 @@ if st.button("Clear the field above"):
 
 # ── 13. Session state shape ────────────────────────────────────────────────
 st.header("13. Session state introspection")
-st.write("st.session_state['t_basic'] =", st.session_state.get("t_basic"))
-st.write("Type:", type(st.session_state.get("t_basic")).__name__)
+ss_val = st.session_state.get("t_basic")
+st.write("st.session_state['t_basic'] =", repr(ss_val))
+st.write("Type:", type(ss_val).__name__)  # should be 'str', not '_WriteThrough'
 
 # ── 14. No key (unkeyed) ───────────────────────────────────────────────────
 st.header("14. Unkeyed component")

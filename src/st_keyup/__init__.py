@@ -131,6 +131,10 @@ export default function({ parentElement, data, setStateValue, setTriggerValue })
     input._userTyping = false;
   } else if (!input._userTyping) {
     input.value = pyValue;
+    // Fire setStateValue so the component state immediately reflects the
+    // Python-driven change (e.g. a programmatic clear). Without this the
+    // component state lags until the user next types. Causes one extra rerun.
+    setStateValue("value", pyValue);
   }
 
   // ── Store latest render values for use in the handlers ────────────────────
@@ -220,21 +224,25 @@ def st_keyup(
         Label shown above the input.
     value : str
         Initial value, used on first render only. On later runs the live value
-        comes from ``st.session_state[key]["value"]``.
+        comes from ``st.session_state[key]`` (a plain string).
     max_chars : int | None
         Maximum number of characters allowed.
     key : str | None
-        Streamlit widget key. Required to read the live value from
-        ``st.session_state[key]["value"]``.
+        Streamlit widget key. When set, ``st.session_state[key]`` contains
+        the current value as a plain ``str`` — no nested dict needed::
 
-        To change the value programmatically, assign to that key *before* this
-        component is instantiated in the current script run — Streamlit raises
-        ``StreamlitAPIException`` if you modify it afterwards::
+            value = st_keyup("Label", key="my_key")
+            # later:
+            current = st.session_state.get("my_key", "")  # plain string
 
+        To update the field programmatically, assign the string *before* this
+        component is rendered in the current script run::
+
+            # At the top of the script (before st_keyup is called):
             if st.session_state.pop("_clear_it", False):
-                st.session_state["my_key"]["value"] = ""
+                st.session_state["my_key"] = ""
 
-            val = st_keyup("Label", key="my_key")
+            value = st_keyup("Label", key="my_key")
 
             if st.button("Clear"):
                 st.session_state["_clear_it"] = True
@@ -267,16 +275,44 @@ def st_keyup(
     str
         The current value of the input.
     """
-    # Read the current live value from session state so programmatic updates
-    # (e.g. clearing the field via st.session_state) are reflected back to JS.
+    # Use an internal component key so that the user's `key` stores a plain
+    # string in session_state instead of the v2 {"value": "..."} dict.
+    # This lets callers do:
+    #   current = st.session_state.get(key, "")   # raw string
+    #   st.session_state[key] = ""               # programmatic clear
+    internal_key = f"_st_keyup_{key}" if key is not None else None
+
+    # Determine current_value with three priorities:
+    #  1. Programmatic override: caller wrote a new string to session_state[key]
+    #     (detected by comparison with the sentinel = what WE last wrote).
+    #  2. Normal rerun: use the component's internal state (what JS last reported
+    #     via setStateValue).  This ensures data.value echoes back the user's
+    #     typing so onRender can clear the _userTyping guard.
+    #  3. First render: fall back to the `value` parameter.
     if key is not None:
-        component_state = st.session_state.get(key, {})
-        if isinstance(component_state, dict):
-            current_value = component_state.get("value", value)
+        sentinel_key = f"_st_keyup_prev_{key}"
+        ss_val = st.session_state.get(key)
+        our_prev = st.session_state.get(sentinel_key)
+        internal_state = st.session_state.get(internal_key, {})
+        internal_value = (
+            internal_state.get("value") if isinstance(internal_state, dict) else None
+        )
+
+        if isinstance(ss_val, str) and ss_val != our_prev:
+            # Caller changed session_state[key] — programmatic override
+            current_value = ss_val
+            programmatic_override = True
+        elif internal_value is not None:
+            # Normal rerun — echo back the last JS-reported value so JS can
+            # clear the _userTyping guard when the round-trip completes.
+            current_value = internal_value
+            programmatic_override = False
         else:
             current_value = value
+            programmatic_override = False
     else:
         current_value = value
+        programmatic_override = False
 
     # Build callbacks
     _on_change: Callable | None = None
@@ -302,7 +338,7 @@ def st_keyup(
             "has_submit": _on_submit is not None,
         },
         default={"value": current_value},
-        key=key,
+        key=internal_key,
         # v2 requires on_{state}_change to be set (even as a no-op) for the
         # state name to be valid in `default`. Always pass at minimum a no-op.
         on_value_change=_on_change or (lambda: None),
@@ -311,7 +347,18 @@ def st_keyup(
         **({"on_submitted_change": _on_submit} if _on_submit is not None else {}),
     )
 
-    return result.value if result.value is not None else current_value
+    live = (
+        current_value  # trust programmatic override, not stale result.value
+        if programmatic_override
+        else (result.value if result.value is not None else current_value)
+    )
+
+    # Write the raw string back under the user-visible key and our sentinel.
+    if key is not None:
+        st.session_state[key] = live
+        st.session_state[sentinel_key] = live
+
+    return live
 
 
 def main() -> None:
