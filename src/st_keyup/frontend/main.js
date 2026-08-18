@@ -44,20 +44,17 @@ function onRender(event) {
   const input = document.getElementById("input_box");
   const label_el = document.getElementById("label")
 
+  // Preserve whatever the user has typed; only fall back to Python's `value` if empty
+  const preservedValue = input.value || value || ""
+
   if (label_el) {
     label_el.innerText = label
-  }
-
-  if (value && !input.value) {
-    input.value = value
   }
 
   // Only change type when needed — reassigning the same type clears value in some browsers
   const desiredType = type == "password" ? "password" : "text"
   if (input.type !== desiredType) {
-    const savedValue = input.value
     input.type = desiredType
-    input.value = savedValue
   }
 
   if (max_chars) {
@@ -65,6 +62,9 @@ function onRender(event) {
   }
 
   input.placeholder = placeholder || ""
+
+  // Restore value unconditionally — prevents any rendering side-effect from wiping it
+  input.value = preservedValue
 
   // Re-apply state classes on every render so Python-side changes propagate
   root.classList.remove("disabled", "label-hidden", "label-collapsed")

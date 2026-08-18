@@ -39,14 +39,13 @@ def st_keyup(
     function
     """
 
+    # Only include parts that structurally require a new component instance.
+    # disabled/label_visibility/type/placeholder are now handled via re-render
+    # (no window.rendered guard), so they must NOT be in the key.
     key_parts = [
         key,
-        disabled,
-        label_visibility,
         debounce,
         max_chars,
-        type,
-        placeholder,
     ]
 
     computed_key = "st_keyup_" + "__".join(
