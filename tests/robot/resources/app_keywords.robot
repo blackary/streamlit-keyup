@@ -10,7 +10,7 @@ ${additional_chrome_options}            ""
 
 Do Suite Setup
     ${process} =   Start Process
-    ...    streamlit                   run   streamlit_app.py
+    ...    uv    run    streamlit         run   streamlit_app.py
     ...        --server.port                     8501
     ...        --server.headless                 true
     ...        --browser.gatherUsageStats        false

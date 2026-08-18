@@ -1,3 +1,0 @@
-streamlit>=1.40
-# Install from local source so the test runs against the current branch
--e .
