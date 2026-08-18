@@ -79,9 +79,9 @@ ${app_url}         http://localhost:8501
     [Documentation]    Typing then triggering an unrelated rerun must NOT
     ...                clear or reset the user's input.
     Type Into Component                15    must survive
-    Sleep                              2s
-    Click Button                       css:[data-testid='stBaseButton-secondary']
-    Sleep                              2.5s
+    Wait Until Page Contains           'must survive'    timeout=15s
+    Click Element                      xpath=//button[normalize-space()='Unrelated rerun']
+    Sleep                              3s
     Nth Component Value Should Be      15    must survive
 
 16. B2 Regression - Enter without on_submit raises no exception
