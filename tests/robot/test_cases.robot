@@ -75,7 +75,7 @@ ${app_url}         http://localhost:8501
     Sleep                              3s
     Nth Component Value Should Be      13    ${EMPTY}
 
-15. B1 Regression - Unrelated rerun does not stomp typed input
+15. Unrelated rerun does not stomp typed input
     [Documentation]    Typing then triggering an unrelated rerun must NOT
     ...                clear or reset the user's input.
     Type Into Component                15    must survive
@@ -84,7 +84,7 @@ ${app_url}         http://localhost:8501
     Sleep                              3s
     Nth Component Value Should Be      15    must survive
 
-16. B2 Regression - Enter without on_submit raises no exception
+16. Enter key without on_submit raises no exception
     [Documentation]    Pressing Enter in a component with no on_submit
     ...                must not raise a StreamlitAPIException.
     Type Into Component                16    enter safe
