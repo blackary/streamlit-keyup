@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import functools
-from typing import Any, Callable, Dict, Optional, Tuple
+from collections.abc import Callable
+from typing import Any
 
 import streamlit as st
 
@@ -184,20 +185,20 @@ _keyup_component = st.components.v2.component(
 def st_keyup(
     label: str,
     value: str = "",
-    max_chars: Optional[int] = None,
-    key: Optional[str] = None,
+    max_chars: int | None = None,
+    key: str | None = None,
     type: str = "default",
-    debounce: Optional[int] = None,
-    on_change: Optional[Callable] = None,
-    args: Optional[Tuple[Any, ...]] = None,
-    kwargs: Optional[Dict[str, Any]] = None,
+    debounce: int | None = None,
+    on_change: Callable | None = None,
+    args: tuple[Any, ...] | None = None,
+    kwargs: dict[str, Any] | None = None,
     *,
     placeholder: str = "",
     disabled: bool = False,
     label_visibility: str = "visible",
-    on_submit: Optional[Callable] = None,
-    submit_args: Optional[Tuple[Any, ...]] = None,
-    submit_kwargs: Optional[Dict[str, Any]] = None,
+    on_submit: Callable | None = None,
+    submit_args: tuple[Any, ...] | None = None,
+    submit_kwargs: dict[str, Any] | None = None,
 ) -> str:
     """
     A text input that returns the current value on every keystroke (or after a
@@ -255,11 +256,11 @@ def st_keyup(
         current_value = value
 
     # Build callbacks
-    _on_change: Optional[Callable] = None
+    _on_change: Callable | None = None
     if on_change is not None:
         _on_change = functools.partial(on_change, *(args or ()), **(kwargs or {}))
 
-    _on_submit: Optional[Callable] = None
+    _on_submit: Callable | None = None
     if on_submit is not None:
         _on_submit = functools.partial(
             on_submit, *(submit_args or ()), **(submit_kwargs or {})
@@ -283,7 +284,7 @@ def st_keyup(
         on_value_change=_on_change or (lambda: None),
         # on_submitted_change registers "submitted" as a trigger; only wire it
         # when a real callback is requested to avoid unnecessary re-runs.
-        **( {"on_submitted_change": _on_submit} if _on_submit is not None else {} ),
+        **({"on_submitted_change": _on_submit} if _on_submit is not None else {}),
     )
 
     return result.value if result.value is not None else current_value
