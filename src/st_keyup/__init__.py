@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import functools
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Literal
 
 import streamlit as st
 
@@ -187,7 +187,7 @@ def st_keyup(
     value: str = "",
     max_chars: int | None = None,
     key: str | None = None,
-    type: str = "default",
+    type: Literal["default", "password"] = "default",
     debounce: int | None = None,
     on_change: Callable | None = None,
     args: tuple[Any, ...] | None = None,
@@ -195,7 +195,7 @@ def st_keyup(
     *,
     placeholder: str = "",
     disabled: bool = False,
-    label_visibility: str = "visible",
+    label_visibility: Literal["visible", "hidden", "collapsed"] = "visible",
     on_submit: Callable | None = None,
     submit_args: tuple[Any, ...] | None = None,
     submit_kwargs: dict[str, Any] | None = None,
