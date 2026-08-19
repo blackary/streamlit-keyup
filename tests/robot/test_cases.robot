@@ -83,29 +83,45 @@ ${app_url}         http://localhost:8501
     Wait Until Page Contains           Type: str    timeout=15s
     Page Should Not Contain            _WriteThrough
 
+13b. Inline clear button clears the field
+    [Documentation]    With show_clear=True, a × button appears when the input
+    ...                is non-empty and clicking it clears the value.
+    Type Into Component                14    to be cleared
+    Wait Until Page Contains           'to be cleared'    timeout=15s
+    ${visible}=    Execute Javascript
+    ...    var h = document.querySelectorAll("[data-testid='stBidiComponentIsolated']")[14];
+    ...    var btn = h.shadowRoot.querySelector("#clear-btn");
+    ...    return getComputedStyle(btn).display;
+    Should Be Equal    ${visible}    flex
+    Execute Javascript
+    ...    var h = document.querySelectorAll("[data-testid='stBidiComponentIsolated']")[14];
+    ...    h.shadowRoot.querySelector("#clear-btn").click();
+    Wait Until Page Contains           ''    timeout=15s
+    Nth Component Value Should Be      14    ${EMPTY}
+
 14. Unkeyed component round-trips to Python
     [Documentation]    A component with key=None must still send its value to
     ...                Python and must not raise.
-    Type Into Component                14    no key here
+    Type Into Component                15    no key here
     Wait Until Page Contains           'no key here'    timeout=15s
-    Nth Component Value Should Be      14    no key here
+    Nth Component Value Should Be      15    no key here
     Page Should Not Contain            Traceback
 
 15. Unrelated rerun does not stomp typed input
     [Documentation]    Typing then triggering an unrelated rerun must NOT
     ...                clear or reset the user's input.
-    Type Into Component                15    must survive
+    Type Into Component                16    must survive
     Wait Until Page Contains           'must survive'    timeout=15s
     Click Element                      xpath=//button[normalize-space()='Unrelated rerun']
     Wait Until Page Contains           unrelated: 1    timeout=15s
-    Nth Component Value Should Be      15    must survive
+    Nth Component Value Should Be      16    must survive
 
 16. Enter key without on_submit raises no exception
     [Documentation]    Pressing Enter in a component with no on_submit
     ...                must not raise a StreamlitAPIException.
-    Type Into Component                16    enter safe
+    Type Into Component                17    enter safe
     Wait Until Page Contains           'enter safe'    timeout=15s
-    Press Enter In Component           16
+    Press Enter In Component           17
     Sleep                              1s
     Page Should Not Contain            StreamlitAPIException
     Page Should Not Contain            Traceback

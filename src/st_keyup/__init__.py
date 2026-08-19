@@ -15,6 +15,7 @@ _HTML = """
   <label id="label" class="stkeyup__label"></label>
   <div class="stkeyup__wrap" id="wrap">
     <input id="input" class="stkeyup__input" />
+    <button id="clear-btn" class="stkeyup__clear" aria-label="Clear">&#x2715;</button>
   </div>
 </div>
 """
@@ -81,6 +82,30 @@ _CSS = """
   cursor: not-allowed;
   opacity: 0.5;
 }
+
+/* inline clear button */
+.stkeyup__clear {
+  display: none;   /* shown by JS when show_clear=True and value non-empty */
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin-right: 6px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--st-text-color, inherit);
+  opacity: 0.5;
+  font-size: 14px;
+  line-height: 1;
+}
+.stkeyup__clear:hover {
+  opacity: 1;
+  background: rgba(127, 127, 127, 0.15);
+}
 """
 
 # ---------------------------------------------------------------------------
@@ -89,10 +114,11 @@ _CSS = """
 
 _JS = r"""
 export default function({ parentElement, data, setStateValue, setTriggerValue }) {
-  const root  = parentElement.querySelector("#root");
-  const lbl   = parentElement.querySelector("#label");
-  const wrap  = parentElement.querySelector("#wrap");
-  const input = parentElement.querySelector("#input");
+  const root     = parentElement.querySelector("#root");
+  const lbl      = parentElement.querySelector("#label");
+  const wrap     = parentElement.querySelector("#wrap");
+  const input    = parentElement.querySelector("#input");
+  const clearBtn = parentElement.querySelector("#clear-btn");
 
   // ── Update label ─────────────────────────────────────────────────────────
   lbl.textContent = data.label ?? "";
@@ -137,8 +163,13 @@ export default function({ parentElement, data, setStateValue, setTriggerValue })
   }
 
   // ── Store latest render values for use in the handlers ────────────────────
-  parentElement._debounce = data.debounce ?? 0;
-  parentElement._hasSubmit = !!data.has_submit;
+  parentElement._debounce   = data.debounce ?? 0;
+  parentElement._hasSubmit  = !!data.has_submit;
+  parentElement._showClear  = !!data.show_clear;
+
+  // ── Clear button visibility ───────────────────────────────────────────────
+  clearBtn.style.display =
+    (parentElement._showClear && input.value !== "") ? "flex" : "none";
 
   // ── Attach handlers once ──────────────────────────────────────────────────
   if (!parentElement._attached) {
@@ -146,6 +177,9 @@ export default function({ parentElement, data, setStateValue, setTriggerValue })
 
     input.addEventListener("input", () => {
       input._userTyping = true;
+      // Update clear button visibility on each keystroke.
+      clearBtn.style.display =
+        (parentElement._showClear && input.value !== "") ? "flex" : "none";
       clearTimeout(debounceTimer);
       const delay = parentElement._debounce;
       if (delay > 0) {
@@ -158,6 +192,16 @@ export default function({ parentElement, data, setStateValue, setTriggerValue })
       // _userTyping is cleared in onRender once Python echoes the value back,
       // never on a timer — a timer can expire before the round-trip completes
       // and let an unrelated re-render stomp the user's input.
+    });
+
+    clearBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      input.value = "";
+      input._userTyping = false;
+      clearBtn.style.display = "none";
+      clearTimeout(debounceTimer);
+      setStateValue("value", "");
+      input.focus();
     });
 
     input.addEventListener("keydown", (e) => {
@@ -209,6 +253,7 @@ def st_keyup(
     placeholder: str = "",
     disabled: bool = False,
     label_visibility: Literal["visible", "hidden", "collapsed"] = "visible",
+    show_clear: bool = False,
     on_submit: Callable | None = None,
     submit_args: tuple[Any, ...] | None = None,
     submit_kwargs: dict[str, Any] | None = None,
@@ -255,6 +300,9 @@ def st_keyup(
         When True, the input is rendered as disabled.
     label_visibility : str
         One of ``"visible"`` (default), ``"hidden"``, or ``"collapsed"``.
+    show_clear : bool
+        When True, a small × button appears inside the input whenever it is
+        non-empty. Clicking it clears the field and fires ``on_change`` if set.
     on_submit : callable | None
         Callback fired when the user presses Enter.
     submit_args : tuple | None
@@ -316,6 +364,7 @@ def st_keyup(
             "placeholder": placeholder,
             "disabled": disabled,
             "label_visibility": label_visibility,
+            "show_clear": show_clear,
             "has_submit": _on_submit is not None,
         },
         default={"value": current_value},

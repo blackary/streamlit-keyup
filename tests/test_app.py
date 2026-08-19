@@ -110,6 +110,11 @@ if st.button("Reset the field above"):
     st.session_state.clear_gen += 1
     st.rerun()
 
+# ── 12b. Inline clear button ───────────────────────────────────────────────
+st.header("12b. Clear button")
+v12b = st_keyup("Type then click ×", show_clear=True, key="t_show_clear")
+st.write("value:", repr(v12b))
+
 # ── 13. Session state shape ────────────────────────────────────────────────
 st.header("13. Session state introspection")
 ss_val = st.session_state.get("t_basic")
