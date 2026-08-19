@@ -1,3 +1,0 @@
-streamlit>=1.2.0
-streamlit-keyup>=0.1.9
-jinja2

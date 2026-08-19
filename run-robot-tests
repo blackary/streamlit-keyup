@@ -1,6 +1,6 @@
 #!/bin/sh
 
-robot \
+uv run robot \
     --outputdir=tests/robot/output \
     --variable=app_url:http://localhost:8501 \
     ${ADDITIONAL_ROBOT_ARGS} \

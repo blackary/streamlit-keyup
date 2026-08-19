@@ -1,5 +1,52 @@
+[project]
+name = "streamlit-keyup"
+version = "1.0.0"
+description = "Text input that returns value on every keystroke (Components v2)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "Zachary Blackwood", email = "zachary@streamlit.io" }]
+keywords = ["streamlit", "component", "text-input", "keyup"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Streamlit",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = ["streamlit>=1.40"]
+
+[project.urls]
+Homepage = "https://github.com/blackary/streamlit-keyup"
+Repository = "https://github.com/blackary/streamlit-keyup"
+Issues = "https://github.com/blackary/streamlit-keyup/issues"
+
+[build-system]
+requires = ["uv_build>=0.8.4,<0.9.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = "src"
+module-name = "st_keyup"
+
+[dependency-groups]
+dev = [
+    "pandas",
+    "robotframework==7.0",
+    "robotframework-debuglibrary==2.5.0",
+    "robotframework-pythonlibcore==4.4.0",
+    "robotframework-seleniumlibrary==6.2.0",
+]
+
 [tool.ruff]
 line-length = 88
+
+[tool.ruff.lint]
 select = ["E", "F", "I001"]
 
 [tool.mypy]
@@ -7,4 +54,4 @@ files = ["**/*.py"]
 follow_imports = "silent"
 ignore_missing_imports = true
 scripts_are_modules = true
-python_version = 3.9
+python_version = "3.10"
