@@ -160,13 +160,13 @@ export default function({ parentElement, data, setStateValue, setTriggerValue })
     input.addEventListener("input", () => {
       input._userTyping = true;
       // Detect datalist selection: value exactly matches a known option.
-      // This flag suppresses the dropdown on the next render so it doesn't
-      // re-appear immediately after selection. Reset on every input event
-      // so normal typing re-enables suggestions.
       const opts = new Set(Array.from(datalist.options).map(o => o.value));
       input._selectedFromList = opts.has(input.value);
-      // Re-attach the list in case it was suppressed after a prior selection.
-      if (datalist.children.length) input.setAttribute("list", "stkeyup-opts");
+      // Remove list attribute immediately on selection so the browser cannot
+      // re-show the dropdown. Re-attach only when the user is actually typing.
+      if (datalist.children.length) {
+        input.setAttribute("list", input._selectedFromList ? "" : "stkeyup-opts");
+      }
       clearTimeout(debounceTimer);
       const delay = parentElement._debounce;
       if (delay > 0) {
