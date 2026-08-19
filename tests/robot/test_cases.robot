@@ -68,10 +68,12 @@ ${app_url}         http://localhost:8501
     Press Enter In Component           12
     Wait Until Page Does Not Contain   submit_count: 0    timeout=15s
 
-12. Programmatic clear via session_state works
-    Type Into Component                13    will be cleared
-    Wait Until Page Contains           'will be cleared'    timeout=15s
-    Click Element                      xpath=//button[normalize-space()='Clear the field above']
+12. Reset by changing the key clears the field
+    [Documentation]    Rendering the widget under a new key produces a fresh,
+    ...                empty input — the supported way to reset from Python.
+    Type Into Component                13    will be reset
+    Wait Until Page Contains           'will be reset'    timeout=15s
+    Click Element                      xpath=//button[normalize-space()='Reset the field above']
     Wait Until Keyword Succeeds        15s    0.5s
     ...    Nth Component Value Should Be      13    ${EMPTY}
 

@@ -101,16 +101,13 @@ def on_sub():
 v11 = st_keyup("Press Enter", on_submit=on_sub, key="t_submit")
 st.write("value:", repr(v11), "| submit_count:", st.session_state.submit_count)
 
-# ── 12. Programmatic clear via session_state ───────────────────────────────
-st.header("12. Programmatic clear")
-# Assign the plain string BEFORE the component is rendered.
-if st.session_state.pop("_do_clear", False):
-    st.session_state["t_clear"] = ""  # plain string assignment!
-
-v12 = st_keyup("Clear me from Python", key="t_clear")
+# ── 12. Reset the field by changing the key ────────────────────────────────
+st.header("12. Reset via key change")
+st.session_state.setdefault("clear_gen", 0)
+v12 = st_keyup("Reset me from Python", key=f"t_clear_{st.session_state.clear_gen}")
 st.write("value:", repr(v12))
-if st.button("Clear the field above"):
-    st.session_state["_do_clear"] = True
+if st.button("Reset the field above"):
+    st.session_state.clear_gen += 1
     st.rerun()
 
 # ── 13. Session state shape ────────────────────────────────────────────────
