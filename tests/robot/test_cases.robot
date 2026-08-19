@@ -109,3 +109,12 @@ ${app_url}         http://localhost:8501
     Sleep                              1s
     Page Should Not Contain            StreamlitAPIException
     Page Should Not Contain            Traceback
+
+17. Suggestions datalist is populated
+    [Documentation]    When suggestions= is provided, the datalist element must
+    ...                contain matching option values.
+    ${html}=    Execute Javascript
+    ...    var h = document.querySelectorAll("[data-testid='stBidiComponentIsolated']")[17];
+    ...    return h.shadowRoot.querySelector("#stkeyup-opts").innerHTML;
+    Should Contain    ${html}    apple
+    Should Contain    ${html}    banana

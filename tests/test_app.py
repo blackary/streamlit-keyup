@@ -135,3 +135,9 @@ st.write("unrelated:", st.session_state.unrelated)
 st.header("16. Enter with no on_submit is safe")
 v16 = st_keyup("Press Enter (no on_submit)", key="t_no_submit")
 st.write("value:", repr(v16))
+
+# ── 17. Datalist suggestions ───────────────────────────────────────────────
+st.header("17. Suggestions (datalist)")
+FRUITS = ["apple", "apricot", "banana", "blueberry", "cherry"]
+v17 = st_keyup("Fruit picker", suggestions=FRUITS, key="t_suggestions")
+st.write("value:", repr(v17))

@@ -14,7 +14,8 @@ _HTML = """
 <div class="stkeyup" id="root">
   <label id="label" class="stkeyup__label"></label>
   <div class="stkeyup__wrap" id="wrap">
-    <input id="input" class="stkeyup__input" />
+    <input id="input" class="stkeyup__input" list="stkeyup-opts" />
+    <datalist id="stkeyup-opts"></datalist>
   </div>
 </div>
 """
@@ -89,10 +90,11 @@ _CSS = """
 
 _JS = r"""
 export default function({ parentElement, data, setStateValue, setTriggerValue }) {
-  const root  = parentElement.querySelector("#root");
-  const lbl   = parentElement.querySelector("#label");
-  const wrap  = parentElement.querySelector("#wrap");
-  const input = parentElement.querySelector("#input");
+  const root      = parentElement.querySelector("#root");
+  const lbl       = parentElement.querySelector("#label");
+  const wrap      = parentElement.querySelector("#wrap");
+  const input     = parentElement.querySelector("#input");
+  const datalist  = parentElement.querySelector("#stkeyup-opts");
 
   // ── Update label ─────────────────────────────────────────────────────────
   lbl.textContent = data.label ?? "";
@@ -140,12 +142,31 @@ export default function({ parentElement, data, setStateValue, setTriggerValue })
   parentElement._debounce = data.debounce ?? 0;
   parentElement._hasSubmit = !!data.has_submit;
 
+  // ── Populate datalist suggestions ─────────────────────────────────────────
+  const suggestions = Array.isArray(data.suggestions) ? data.suggestions : [];
+  // Only rebuild when the list actually changed (avoids flicker).
+  const esc = s => String(s).replace(/"/g, "&quot;");
+  const newHtml = suggestions.map(s => `<option value="${esc(s)}"></option>`).join("");
+  if (datalist.innerHTML !== newHtml) datalist.innerHTML = newHtml;
+  // Suppress the dropdown after a datalist selection is confirmed (prevents it
+  // re-appearing on the next render). Re-attached on the next input event.
+  const listId = (suggestions.length && !input._selectedFromList) ? "stkeyup-opts" : "";
+  input.setAttribute("list", listId);
+
   // ── Attach handlers once ──────────────────────────────────────────────────
   if (!parentElement._attached) {
     let debounceTimer = null;
 
     input.addEventListener("input", () => {
       input._userTyping = true;
+      // Detect datalist selection: value exactly matches a known option.
+      const opts = new Set(Array.from(datalist.options).map(o => o.value));
+      input._selectedFromList = opts.has(input.value);
+      // Remove list attribute immediately on selection so the browser cannot
+      // re-show the dropdown. Re-attach only when the user is actually typing.
+      if (datalist.children.length) {
+        input.setAttribute("list", input._selectedFromList ? "" : "stkeyup-opts");
+      }
       clearTimeout(debounceTimer);
       const delay = parentElement._debounce;
       if (delay > 0) {
@@ -209,6 +230,7 @@ def st_keyup(
     placeholder: str = "",
     disabled: bool = False,
     label_visibility: Literal["visible", "hidden", "collapsed"] = "visible",
+    suggestions: list[str] | None = None,
     on_submit: Callable | None = None,
     submit_args: tuple[Any, ...] | None = None,
     submit_kwargs: dict[str, Any] | None = None,
@@ -255,6 +277,10 @@ def st_keyup(
         When True, the input is rendered as disabled.
     label_visibility : str
         One of ``"visible"`` (default), ``"hidden"``, or ``"collapsed"``.
+    suggestions : list[str] | None
+        Optional list of strings shown as autocomplete suggestions while the
+        user types. Uses the browser's native ``<datalist>`` — no selection is
+        forced; the user can still type anything.
     on_submit : callable | None
         Callback fired when the user presses Enter.
     submit_args : tuple | None
@@ -316,6 +342,7 @@ def st_keyup(
             "placeholder": placeholder,
             "disabled": disabled,
             "label_visibility": label_visibility,
+            "suggestions": suggestions or [],
             "has_submit": _on_submit is not None,
         },
         default={"value": current_value},
