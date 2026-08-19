@@ -109,3 +109,10 @@ ${app_url}         http://localhost:8501
     Sleep                              1s
     Page Should Not Contain            StreamlitAPIException
     Page Should Not Contain            Traceback
+
+17. Additional HTML input types are applied correctly
+    [Documentation]    type="email", "number", and "search" must set the
+    ...                corresponding DOM input type attribute.
+    Nth Component Attr Should Be       17    type    email
+    Nth Component Attr Should Be       18    type    number
+    Nth Component Attr Should Be       19    type    search
