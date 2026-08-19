@@ -135,3 +135,10 @@ st.write("unrelated:", st.session_state.unrelated)
 st.header("16. Enter with no on_submit is safe")
 v16 = st_keyup("Press Enter (no on_submit)", key="t_no_submit")
 st.write("value:", repr(v16))
+
+# ── 17. Additional HTML input types ───────────────────────────────────────
+st.header("17. Additional input types")
+v17a = st_keyup("Email", type="email", key="t_email")
+v17b = st_keyup("Number", type="number", key="t_number")
+v17c = st_keyup("Search", type="search", key="t_search")
+st.write("email:", repr(v17a), "| number:", repr(v17b), "| search:", repr(v17c))

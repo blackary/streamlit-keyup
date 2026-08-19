@@ -114,7 +114,7 @@ export default function({ parentElement, data, setStateValue, setTriggerValue })
   input.maxLength   = data.max_chars > 0 ? data.max_chars : 524288;
 
   // Only change type when needed (changing type clears value in some browsers)
-  const desiredType = data.type === "password" ? "password" : "text";
+  const desiredType = (data.type === "default" || !data.type) ? "text" : data.type;
   if (input.type !== desiredType) {
     const saved = input.value;
     input.type  = desiredType;
@@ -200,7 +200,7 @@ def st_keyup(
     value: str = "",
     max_chars: int | None = None,
     key: str | None = None,
-    type: Literal["default", "password"] = "default",
+    type: str = "default",
     debounce: int | None = None,
     on_change: Callable | None = None,
     args: tuple[Any, ...] | None = None,
@@ -238,7 +238,9 @@ def st_keyup(
         fresh widget); assigning to ``st.session_state[key]`` does not push a
         value into the input.
     type : str
-        ``"default"`` or ``"password"``.
+        ``"default"`` (plain text), ``"password"`` (masked), or any valid HTML
+        ``<input type>`` string such as ``"email"``, ``"number"``, ``"tel"``,
+        ``"url"``, or ``"search"``. Unrecognised values fall back to ``"text"``.
     debounce : int | None
         Milliseconds to wait after the last keystroke before updating Python.
     on_change : callable | None
