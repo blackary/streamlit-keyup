@@ -148,7 +148,11 @@ export default function({ parentElement, data, setStateValue, setTriggerValue })
   const esc = s => String(s).replace(/"/g, "&quot;");
   const newHtml = suggestions.map(s => `<option value="${esc(s)}"></option>`).join("");
   if (datalist.innerHTML !== newHtml) datalist.innerHTML = newHtml;
-  input.setAttribute("list", suggestions.length ? "stkeyup-opts" : "");
+  // Only attach the list attribute while the user is actively typing.
+  // Once Python acknowledges the value (_userTyping=false) we detach it so the
+  // browser cannot re-show the dropdown after a selection is confirmed.
+  const listId = (suggestions.length && input._userTyping) ? "stkeyup-opts" : "";
+  input.setAttribute("list", listId);
 
   // ── Attach handlers once ──────────────────────────────────────────────────
   if (!parentElement._attached) {
@@ -156,6 +160,8 @@ export default function({ parentElement, data, setStateValue, setTriggerValue })
 
     input.addEventListener("input", () => {
       input._userTyping = true;
+      // Re-attach datalist on keystroke so suggestions appear while typing.
+      if (datalist.children.length) input.setAttribute("list", "stkeyup-opts");
       clearTimeout(debounceTimer);
       const delay = parentElement._debounce;
       if (delay > 0) {
