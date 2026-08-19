@@ -9,7 +9,6 @@ authors = [{ name = "Zachary Blackwood", email = "zachary@streamlit.io" }]
 keywords = ["streamlit", "component", "text-input", "keyup"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
-    "Framework :: Streamlit :: Component",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
