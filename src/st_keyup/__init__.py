@@ -148,10 +148,9 @@ export default function({ parentElement, data, setStateValue, setTriggerValue })
   const esc = s => String(s).replace(/"/g, "&quot;");
   const newHtml = suggestions.map(s => `<option value="${esc(s)}"></option>`).join("");
   if (datalist.innerHTML !== newHtml) datalist.innerHTML = newHtml;
-  // Only attach the list attribute while the user is actively typing.
-  // Once Python acknowledges the value (_userTyping=false) we detach it so the
-  // browser cannot re-show the dropdown after a selection is confirmed.
-  const listId = (suggestions.length && input._userTyping) ? "stkeyup-opts" : "";
+  // Suppress the dropdown after a datalist selection is confirmed (prevents it
+  // re-appearing on the next render). Re-attached on the next input event.
+  const listId = (suggestions.length && !input._selectedFromList) ? "stkeyup-opts" : "";
   input.setAttribute("list", listId);
 
   // ── Attach handlers once ──────────────────────────────────────────────────
@@ -160,7 +159,13 @@ export default function({ parentElement, data, setStateValue, setTriggerValue })
 
     input.addEventListener("input", () => {
       input._userTyping = true;
-      // Re-attach datalist on keystroke so suggestions appear while typing.
+      // Detect datalist selection: value exactly matches a known option.
+      // This flag suppresses the dropdown on the next render so it doesn't
+      // re-appear immediately after selection. Reset on every input event
+      // so normal typing re-enables suggestions.
+      const opts = new Set(Array.from(datalist.options).map(o => o.value));
+      input._selectedFromList = opts.has(input.value);
+      // Re-attach the list in case it was suppressed after a prior selection.
       if (datalist.children.length) input.setAttribute("list", "stkeyup-opts");
       clearTimeout(debounceTimer);
       const delay = parentElement._debounce;
